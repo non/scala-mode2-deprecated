@@ -53,7 +53,7 @@
     ; types, e.g. "Qux"
     (,(rx ":"
           (0+ space)
-          (group (and (not (in ":()[]{}; \t")) (0+ (not (in "()[]{}; \t"))))))
+          (group (and (in "a-zA-Z_") (0+ (not (in "()[]{}; \t"))))))
      (1 font-lock-type-face))
     (,(rx ":"
           (1+ space)
