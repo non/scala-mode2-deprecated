@@ -2,36 +2,7 @@
 ;;
 ;; by Erik Osheim
 ;;
-;; The existing mode is pretty big (lots of files and stuff) and seems to have
-;; lots of features but is pretty inconsistent, and doesn't do a great job with
-;; basic things. The goal here is to try to define a mode that is both more
-;; modest in what it sets out to do, but also more reliable.
-;;
-;; DONE:
-;;
-;;  1. Method highlighting is more reliable (no more annoying flickering)
-;;
-;;  2. Symbols
-;;
-;;  3. Better highlighting for types
-;;
-;;  4. Reliable class/trait/object highlighting
-;;
-;;  5. More flexible supported names for methods, types, etc.
-
-;; TODO:
-;;
-;;  1. improve "syntactic" highlighting junk (i.e. triple-quoted strings)
-;;
-;;  2. indentation support
-;;
-;;  3. Better comment support (e.g. multi-line /* ... */)
-;;
-;;  4. support for which-function mode
-;;
-;;  5. xml literals? (ugh!)
-;;
-;;  6. ???
+;; available under the MIT license
 
 (defvar scala2-hook nil)
 
@@ -46,18 +17,18 @@
 
 (defvar scala2-font-lock-keywords
   `(
-    ; annotation
+    ; annotation, e.g. "@specialized"
     (,(rx "@" (in "a-zA-Z_") (0+ (in "a-zA-Z0-9_")))
      . font-lock-preprocessor-face)
 
-    ; class/trait/object names
+    ; class/trait/object names, e.g. "object Foo"
     (,(rx symbol-start
           (group (or "class" "trait" "object"))
           (1+ space)
           (group (and (in "a-zA-Z_") (0+ (in "a-zA-Z0-9_")))))
      (1 font-lock-keyword-face) (2 font-lock-type-face))
 
-    ; def names
+    ; def names, e.g. "def bar"
     (,(rx symbol-start
           (group "def")
           (1+ space)
@@ -65,7 +36,7 @@
                       (0+ (not (in "0-9:([ "))))))
      (1 font-lock-keyword-face) (2 font-lock-function-name-face))
 
-    ; val/var names
+    ; val/var names, e.g. "val xyz"
     (,(rx symbol-start
           (group (or "val" "var"))
           (1+ space)
@@ -73,13 +44,13 @@
                       (0+ (not (in "0-9:([ "))))))
      (1 font-lock-keyword-face) (2 font-lock-variable-name-face))
 
-    ; symbols
+    ; symbols, e.g. "'lisp"
     (,(rx "'"
           (in "a-zA-Z_")
           (0+ (in "a-zA-Z0-9_")))
      . font-lock-constant-face)
 
-    ; types
+    ; types, e.g. "Qux"
     (,(rx ":"
           (0+ space)
           (group (and (not (in ":()[]{}; \t")) (0+ (not (in "()[]{}; \t"))))))
@@ -93,7 +64,7 @@
           (0+ (in "a-zA-Z0-9_")))
      . font-lock-type-face)
 
-    ; keywords
+    ; keywords, e.g. "this"
     (,(rx symbol-start
           (or "yield" "with" "while" "var" "val" "until" "type" "true" "try"
               "trait" "throw" "to" "this" "super" "sealed" "return" "protected"
@@ -115,8 +86,6 @@
     (modify-syntax-entry ?\] ")[" st)
     (modify-syntax-entry ?\} "){" st)
     
-    ;;(modify-syntax-entry ?_ "w" st)
-
     (modify-syntax-entry ?\_ "_" st)
     (modify-syntax-entry ?\. "." st)
        
@@ -131,7 +100,6 @@
   (interactive)
   (kill-all-local-variables)
   (set-syntax-table scala2-syntax-table)
-  ;(use-local-map scala-mode-map)
   (use-local-map scala2-map)
 
   (set (make-local-variable 'font-lock-defaults) '(scala2-font-lock-keywords))
@@ -140,17 +108,8 @@
 
   (setq major-mode 'scala2
     mode-name "Scala2"
-
-    paragraph-separate            (concat "^\\s *$\\|" page-delimiter)
-    paragraph-start               (concat "^\\s *$\\|" page-delimiter)
-    paragraph-ignore-fill-prefix  t
-    require-final-newline         t
-    comment-start                 "// "
-    comment-end                   ""
-    ;; not sure what the rest of this does...
-    comment-start-skip            "/\\*+ *\\|//+ *"
-    comment-end-skip              " *\\*+/\\| *"
-    comment-column                40
+    comment-start "// "
+    comment-end ""
   )
   (run-hooks 'scala2-hook))
 
