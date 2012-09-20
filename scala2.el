@@ -89,6 +89,25 @@
     )
   )
 
+(defun scala2-quote-syntax2 ()
+  ;; Handle tripple quotes by using generic string delimiters
+  ;; leave the first pair of quotes alone and the last pair of 
+  ;; quotes alone and mark the middle with generic string delim
+  ;; so """ hello """ is parsed something like:
+  ;; <open str><close str><open gen delim> hello <close gen delim><open str><close str>
+  (save-excursion
+    (let ((syntax (save-match-data (syntax-ppss))))
+      (if (not (nth 3 syntax))
+          (put-text-property (match-beginning 3) (match-end 3) 
+                             'syntax-table (string-to-syntax "|"))
+        (put-text-property (match-beginning 1) (match-end 1)
+                           'syntax-table (string-to-syntax "|"))))))
+        
+(defvar scala2-syntax-propertize-function
+  (syntax-propertize-rules 
+   ("\\(\"\\)\\(\"\\)\\(\"\\)"
+            (3 (ignore (scala2-quote-syntax2))))))
+
 (defvar scala2-syntax-table
   (let ((st (make-syntax-table)))
     (modify-syntax-entry ?\( "()" st)
@@ -115,6 +134,8 @@
   (use-local-map scala2-map)
 
   (set (make-local-variable 'font-lock-defaults) '(scala2-font-lock-keywords))
+  (set (make-local-variable 'syntax-propertize-function)
+       scala2-syntax-propertize-function)
 
   ;;(set (make-local-variable 'indent-line-function) 'scala2-indent-line) 
 
