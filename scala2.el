@@ -74,6 +74,9 @@
           (0+ (in "a-zA-Z0-9_")))
      . font-lock-type-face)
 
+    ; number
+    ("-?[0-9]+\\(\.[0-9]+\\)?" . font-lock-constant-face)
+
     ; keywords, e.g. "this"
     (,(rx symbol-start
           (or "yield" "with" "while" "var" "val" "until" "type" "true" "try"
