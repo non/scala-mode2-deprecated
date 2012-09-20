@@ -74,8 +74,14 @@
           (0+ (in "a-zA-Z0-9_")))
      . font-lock-type-face)
 
-    ; number
-    ("-?[0-9]+\\(\.[0-9]+\\)?" . font-lock-constant-face)
+    ; hex literals
+    ("0x[0-9A-Fa-f]+[Ll]?" . font-lock-constant-face)
+
+    ; floating point literals
+    ("[0-9]+\\.[0-9]+[DdFf]?" . font-lock-constant-face)
+
+    ; integer literals
+    ("\\(0\\|[1-9]\\)[0-9]*[DdFfLl]?" . font-lock-constant-face)
 
     ; keywords, e.g. "this"
     (,(rx symbol-start
