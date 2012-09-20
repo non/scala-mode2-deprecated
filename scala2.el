@@ -4,8 +4,6 @@
 ;;
 ;; available under the MIT license
 
-(defvar scala2-hook nil)
-
 (defvar scala2-map
   (let ((map (make-keymap)))
     (define-key map "\C-j" 'newline-and-indent)
@@ -116,34 +114,27 @@
     (modify-syntax-entry ?\) ")(" st)
     (modify-syntax-entry ?\] ")[" st)
     (modify-syntax-entry ?\} "){" st)
-    
+
     (modify-syntax-entry ?\_ "_" st)
     (modify-syntax-entry ?\. "." st)
-       
+
     (modify-syntax-entry ?/ ". 124nb" st)
     (modify-syntax-entry ?* ". 23n" st)
     (modify-syntax-entry ?\n "> bn" st)
     (modify-syntax-entry ?\r "> bn" st)
     st))
 
-(defun scala2 ()
-  "Major mode for scala2"
-  (interactive)
-  (kill-all-local-variables)
-  (set-syntax-table scala2-syntax-table)
-  (use-local-map scala2-map)
+(define-derived-mode scala2
+  prog-mode "Scala2"
+  "Major mode for scala
+\\{scala2-map}"
 
   (set (make-local-variable 'font-lock-defaults) '(scala2-font-lock-keywords))
   (set (make-local-variable 'syntax-propertize-function)
        scala2-syntax-propertize-function)
+  (set-syntax-table scala2-syntax-table)
 
-  ;;(set (make-local-variable 'indent-line-function) 'scala2-indent-line) 
-
-  (setq major-mode 'scala2
-    mode-name "Scala2"
-    comment-start "// "
-    comment-end ""
-  )
-  (run-hooks 'scala2-hook))
+  (setq comment-start "// ")
+  (setq comment-end ""))
 
 (provide 'scala2)
