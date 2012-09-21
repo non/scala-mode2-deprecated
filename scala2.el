@@ -127,10 +127,10 @@
     (modify-syntax-entry ?\_ "_" st)
     (modify-syntax-entry ?\. "." st)
 
-    (modify-syntax-entry ?/ ". 124nb" st)
+    (modify-syntax-entry ?/ ". 124b" st)
     (modify-syntax-entry ?* ". 23n" st)
-    (modify-syntax-entry ?\n "> bn" st)
-    (modify-syntax-entry ?\r "> bn" st)
+    (modify-syntax-entry ?\n "> b" st)
+    (modify-syntax-entry ?\r "> b" st)
     st))
 
 (define-derived-mode scala2
