@@ -41,11 +41,12 @@
     (,(rx symbol-start
         (group (or "class" "trait" "object"))
         (1+ space)
-        (group (or 
-                 (and (in "a-zA-Z_")
-                      (0+ (in "a-zA-Z0-9_"))
-                      (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
-                 (1+ (in "!#%&*+-/:<=>?@\\^|~"))))
+        (group
+          (or 
+            (and (in "a-zA-Z_")
+                 (0+ (in "a-zA-Z0-9_"))
+                 (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
+            (1+ (in "!#%&*+-/:<=>?@\\^|~"))))
         (or space "{" "["))
      (1 font-lock-keyword-face) (2 font-lock-type-face))
 
@@ -53,11 +54,12 @@
     (,(rx symbol-start
         (group "def")
         (1+ space)
-        (group (or 
-                 (and (in "a-zA-Z_")
-                      (0+ (in "a-zA-Z0-9_"))
-                      (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
-                 (1+ (in "!#%&*+-/:<=>?@\\^|~"))))
+        (group
+          (or 
+            (and (in "a-zA-Z_")
+                 (0+ (in "a-zA-Z0-9_"))
+                 (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
+            (1+ (in "!#%&*+-/:<=>?@\\^|~"))))
         (0+ space)
         (or "{" "[" "(" "=" ":"))
      (1 font-lock-keyword-face) (2 font-lock-function-name-face))
@@ -135,6 +137,13 @@
 
     ; integer literals
     ("\\(0\\|[1-9]\\)[0-9]*[DdFfLl]?" . font-lock-constant-face)
+
+    ; package name
+    (,(rx symbol-start
+        (group "package")
+        (1+ space)
+        (group (and (in "a-zA-Z_.") (0+ (in "a-zA-Z0-9_.")))))
+     (1 font-lock-keyword-face) (2 font-lock-builtin-face))
 
     ; keywords, e.g. "this"
     (,(rx symbol-start
