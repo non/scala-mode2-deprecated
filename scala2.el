@@ -58,7 +58,8 @@
                       (0+ (in "a-zA-Z0-9_"))
                       (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
                  (1+ (in "!#%&*+-/:<=>?@\\^|~"))))
-        (or space "{" "[" "(" "=" ":"))
+        (0+ space)
+        (or "{" "[" "(" "=" ":"))
      (1 font-lock-keyword-face) (2 font-lock-function-name-face))
 
     ; val/var names, e.g. "val xyz"
@@ -70,7 +71,8 @@
                       (0+ (in "a-zA-Z0-9_"))
                       (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
                  (1+ (in "!#%&*+-/:<=>?@\\^|~"))))
-        (or space "=" ":"))
+        (0+ space)
+        (or "=" ":"))
       (1 font-lock-keyword-face) (2 font-lock-variable-name-face))
 
     ; symbols, e.g. "'lisp"
