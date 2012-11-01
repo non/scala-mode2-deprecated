@@ -13,6 +13,24 @@
 (add-to-list 'auto-mode-alist '("\\.scala\\'" . scala2))
 (add-to-list 'auto-mode-alist '("\\.sbt\\'" . scala2))
 
+;; TODO: figure out how to pull out definitions of alphaWord, opWord, and word
+
+;(setq alphaWord
+;  `(and (in "a-zA-Z_")
+;        (0+ (in "a-zA-Z0-9_"))
+;        (\? (and "_" (1+ (in ("!#%&*+-/:<=>?@\\^|~")))))))
+;
+;(setq opWord `(1+ (in ("!#%&*+-/:<=>?@\\^|~"))))
+;
+;(setq word `(or alphaWord opWord))
+
+(setq word
+  `(or 
+    (and (in "a-zA-Z_")
+         (0+ (in "a-zA-Z0-9_"))
+         (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
+    (1+ (in "!#%&*+-/:<=>?@\\^|~"))))
+  
 (defvar scala2-font-lock-keywords
   `(
     ; annotation, e.g. "@specialized"
@@ -21,57 +39,89 @@
 
     ; class/trait/object names, e.g. "object Foo"
     (,(rx symbol-start
-          (group (or "class" "trait" "object"))
-          (1+ space)
-          (group (and (in "a-zA-Z_") (0+ (in "a-zA-Z0-9_")))))
+        (group (or "class" "trait" "object"))
+        (1+ space)
+        (group (or 
+                 (and (in "a-zA-Z_")
+                      (0+ (in "a-zA-Z0-9_"))
+                      (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
+                 (1+ (in "!#%&*+-/:<=>?@\\^|~"))))
+        (or space "{" "["))
      (1 font-lock-keyword-face) (2 font-lock-type-face))
 
     ; def names, e.g. "def bar"
     (,(rx symbol-start
-          (group "def")
-          (1+ space)
-          (group (and (not (in ":([ "))
-                      (0+ (not (in "0-9:([ "))))))
+        (group "def")
+        (1+ space)
+        (group (or 
+                 (and (in "a-zA-Z_")
+                      (0+ (in "a-zA-Z0-9_"))
+                      (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
+                 (1+ (in "!#%&*+-/:<=>?@\\^|~"))))
+        (or space "{" "[" "(" "=" ":"))
      (1 font-lock-keyword-face) (2 font-lock-function-name-face))
 
     ; val/var names, e.g. "val xyz"
     (,(rx symbol-start
-          (group (or "val" "var"))
-          (1+ space)
-          (group (and (not (in ":([ "))
-                      (0+ (not (in "0-9:([ "))))))
-     (1 font-lock-keyword-face) (2 font-lock-variable-name-face))
+        (group (or "val" "var"))
+        (1+ space)
+        (group (or 
+                 (and (in "a-zA-Z_")
+                      (0+ (in "a-zA-Z0-9_"))
+                      (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
+                 (1+ (in "!#%&*+-/:<=>?@\\^|~"))))
+        (or space "=" ":"))
+      (1 font-lock-keyword-face) (2 font-lock-variable-name-face))
 
     ; symbols, e.g. "'lisp"
-    (,(rx "'"
-          (in "a-zA-Z_")
-          (0+ (in "a-zA-Z0-9_")))
-     . font-lock-constant-face)
+    (,(rx "'" (or 
+          (and (in "a-zA-Z_")
+               (0+ (in "a-zA-Z0-9_"))
+               (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
+          (1+ (in "!#%&*+-/:<=>?@\\^|~"))))
+    . font-lock-constant-face)
 
     ; types, e.g. "Qux"
     (,(rx ":"
-          (0+ space)
-          (group (and (in "a-zA-Z_") (0+ (not (in "()[]{}; \t"))))))
-     (1 font-lock-type-face))
-    (,(rx ":"
-          (1+ space)
-          (group (and ":" (0+ (not (in "()[]{}; \t"))))))
-     (1 font-lock-type-face))
+        (0+ space)
+        (group (or 
+                 (and (in "a-zA-Z_")
+                      (0+ (in "a-zA-Z0-9_"))
+                      (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
+                 (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
+      (1 font-lock-type-face))
+
     (,(rx (group "extends")
           (1+ space)
-          (group (1+ (not (in "()[]{}; \t")))))
-     (1 font-lock-keyword-face) (2 font-lock-type-face))
+          (group (or 
+                   (and (in "a-zA-Z_")
+                        (0+ (in "a-zA-Z0-9_"))
+                        (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
+                   (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
+      (1 font-lock-keyword-face) (2 font-lock-type-face))
+
     (,(rx (group "with")
           (1+ space)
-          (group (1+ (not (in "()[]{}; \t")))))
-     (1 font-lock-keyword-face) (2 font-lock-type-face))
+          (group (or 
+                   (and (in "a-zA-Z_")
+                        (0+ (in "a-zA-Z0-9_"))
+                        (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
+                   (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
+      (1 font-lock-keyword-face) (2 font-lock-type-face))
+
     (,(rx (group "new")
           (1+ space)
-          (group (1+ (not (in "()[]{}; \t")))))
-     (1 font-lock-keyword-face) (2 font-lock-type-face))
-    (,(rx symbol-start
-          (in "A-Z")
-          (0+ (in "a-zA-Z0-9_")))
+          (group (or 
+                   (and (in "a-zA-Z_")
+                        (0+ (in "a-zA-Z0-9_"))
+                        (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
+                   (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
+      (1 font-lock-keyword-face) (2 font-lock-type-face))
+
+    ; uppercase
+    (,(rx symbol-start (in "A-Z") (and (in "a-zA-Z_")
+        (0+ (in "a-zA-Z0-9_"))
+        (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~"))))))
      . font-lock-type-face)
 
     ; hex literals
