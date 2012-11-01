@@ -119,9 +119,10 @@
       (1 font-lock-keyword-face) (2 font-lock-type-face))
 
     ; uppercase
-    (,(rx symbol-start (in "A-Z") (and (in "a-zA-Z_")
-        (0+ (in "a-zA-Z0-9_"))
-        (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~"))))))
+    (,(rx symbol-start
+        (and (in "A-Z")
+             (0+ (in "a-zA-Z0-9_"))
+             (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~"))))))
      . font-lock-type-face)
 
     ; hex literals
