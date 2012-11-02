@@ -70,14 +70,6 @@
         (or "=" ":"))
       (1 font-lock-keyword-face) (2 font-lock-variable-name-face))
     
-    ; symbols, e.g. "'lisp"
-    (,(rx "'" (or 
-          (and (in "a-zA-Z_")
-               (0+ (in "a-zA-Z0-9_"))
-               (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
-          (1+ (in "!#%&*+-/:<=>?@\\^|~"))))
-    . font-lock-constant-face)
-
     ; types, e.g. "Qux"
     (,(rx ":"
         (0+ space)
@@ -140,6 +132,17 @@
           symbol-end)
      . font-lock-keyword-face)
 
+
+    ; char literals
+    ("'\\([^'\\\\\n]\\|\\\\.\\)+'" . font-lock-string-face)
+          
+    ; symbols, e.g. "'lisp"
+    (,(rx "'" (or 
+          (and (in "a-zA-Z_")
+               (0+ (in "a-zA-Z0-9_"))
+               (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
+          (1+ (in "!#%&*+-/:<=>?@\\^|~"))))
+    . font-lock-constant-face)
 
     ; barewords
     (,(rx
