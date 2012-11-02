@@ -122,15 +122,6 @@
              (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~"))))))
      . font-lock-type-face)
 
-    ; hex literals
-    ("0x[0-9A-Fa-f]+[Ll]?" . font-lock-constant-face)
-    
-    ; floating point literals
-    ("[0-9]+\\.[0-9]+[DdFf]?" . font-lock-constant-face)
-    
-    ; integer literals
-    ("\\(0\\|[1-9]\\)[0-9]*[DdFfLl]?" . font-lock-constant-face)
-    
     ; package name
     (,(rx symbol-start
         (group "package")
@@ -149,17 +140,26 @@
           symbol-end)
      . font-lock-keyword-face)
 
+
     ; barewords
     (,(rx
-        (or (and (in "a-zA-Z_")
-                 (0+ (in "a-zA-Z0-9_"))
-                 (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
+        (or (and
+              (in "a-zA-Z_")
+              (0+ (in "0-9a-zA-Z_"))
+              (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
             (1+ (in "-!#%&*+/:<=>?@\\^|~"))))
-      . font-lock-variable-name-face)
-    )
+      . default)
 
-  
+    ; hex literals
+    ("0x[0-9A-Fa-f]+[Ll]?" . font-lock-constant-face)
+    
+    ; floating point literals
+    ("[0-9]+\\.[0-9]+[DdFf]?" . font-lock-constant-face)
+    
+    ; integer literals
+    ("\\(0\\|[1-9]\\)[0-9]*[DdFfLl]?" . font-lock-constant-face)
   )
+)
 
 (defun scala2-quote-syntax2 ()
   ;; Handle tripple quotes by using generic string delimiters
