@@ -24,13 +24,6 @@
 ;
 ;(setq word `(or alphaWord opWord))
 
-(setq word
-  `(or 
-    (and (in "a-zA-Z_")
-         (0+ (in "a-zA-Z0-9_"))
-         (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
-    (1+ (in "!#%&*+-/:<=>?@\\^|~"))))
-  
 (defvar scala2-font-lock-keywords
   `(
     ; annotation, e.g. "@specialized"
@@ -49,7 +42,7 @@
             (1+ (in "!#%&*+-/:<=>?@\\^|~"))))
         (or space "{" "["))
      (1 font-lock-keyword-face) (2 font-lock-type-face))
-
+    
     ; def names, e.g. "def bar"
     (,(rx symbol-start
         (group "def")
@@ -63,7 +56,7 @@
         (0+ space)
         (or "{" "[" "(" "=" ":"))
      (1 font-lock-keyword-face) (2 font-lock-function-name-face))
-
+    
     ; val/var names, e.g. "val xyz"
     (,(rx symbol-start
         (group (or "val" "var"))
@@ -76,7 +69,7 @@
         (0+ space)
         (or "=" ":"))
       (1 font-lock-keyword-face) (2 font-lock-variable-name-face))
-
+    
     ; symbols, e.g. "'lisp"
     (,(rx "'" (or 
           (and (in "a-zA-Z_")
@@ -92,7 +85,7 @@
                  (and (in "a-zA-Z_")
                       (0+ (in "a-zA-Z0-9_"))
                       (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
-                 (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
+                 (and (in "!#%&*+-/<=>?@\\^|~") (0+ (in "!#%&*+-/:<=>?@\\^|~"))))))
       (1 font-lock-type-face))
 
     (,(rx (group "extends")
@@ -103,7 +96,7 @@
                         (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
                    (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
       (1 font-lock-keyword-face) (2 font-lock-type-face))
-
+    
     (,(rx (group "with")
           (1+ space)
           (group (or 
@@ -112,7 +105,7 @@
                         (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
                    (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
       (1 font-lock-keyword-face) (2 font-lock-type-face))
-
+    
     (,(rx (group "new")
           (1+ space)
           (group (or 
@@ -131,20 +124,20 @@
 
     ; hex literals
     ("0x[0-9A-Fa-f]+[Ll]?" . font-lock-constant-face)
-
+    
     ; floating point literals
     ("[0-9]+\\.[0-9]+[DdFf]?" . font-lock-constant-face)
-
+    
     ; integer literals
     ("\\(0\\|[1-9]\\)[0-9]*[DdFfLl]?" . font-lock-constant-face)
-
+    
     ; package name
     (,(rx symbol-start
         (group "package")
         (1+ space)
         (group (and (in "a-zA-Z_.") (0+ (in "a-zA-Z0-9_.")))))
-     (1 font-lock-keyword-face) (2 font-lock-builtin-face))
-
+     (1 font-lock-keyword-face) (2 font-lock-string-face))
+    
     ; keywords, e.g. "this"
     (,(rx symbol-start
           (or "yield" "with" "while" "var" "val" "until" "type" "true" "try"
@@ -155,7 +148,17 @@
               "case" "abstract")
           symbol-end)
      . font-lock-keyword-face)
+
+    ; barewords
+    (,(rx
+        (or (and (in "a-zA-Z_")
+                 (0+ (in "a-zA-Z0-9_"))
+                 (\? (and "_" (1+ (in "!#%&*+-/:<=>?@\\^|~")))))
+            (1+ (in "-!#%&*+/:<=>?@\\^|~"))))
+      . font-lock-variable-name-face)
     )
+
+  
   )
 
 (defun scala2-quote-syntax2 ()
